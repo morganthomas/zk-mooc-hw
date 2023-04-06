@@ -16,6 +16,41 @@
 
 \maketitle
 
-TODO
+\section{Question 1}
+
+\subsection{Part (a)}
+
+\textbf{Question.} Give an expression for the multilinear extension
+$\widetilde{\mathsf{eq}}_\ell : \{0,1\}^\ell \times \{0,1\}^\ell \to \{0,1\}$, that is defined
+as follows:
+
+\begin{equation}
+  \mathsf{eq}_\ell(a, b) = \begin{cases}
+	  1 & \text{if}\ a = b \\
+	  0 & \text{otherwise}
+  \end{cases}
+\end{equation}
+
+Argue that this polynomial can be evaluated at any point in time $O(\ell)$.
+
+\textbf{Answer.} Let:
+
+\begin{equation}
+	\widetilde{\mathsf{eq}}_\ell(a,b) = \prod_{i=1}^\ell 1 - a_i + b_i.
+\end{equation}
+
+This polynomial agrees with $\mathsf{eq}$ on all
+$(a,b) \in \{0,1\}^\ell \times \{0,1\}^\ell$. It is also multilinear,
+as we can see by induction on $\ell$. When $\ell = 1$, it is clearly
+multilinear. When $\ell > 1$, we can observe that
+
+\begin{equation}
+	\widetilde{\mathsf{eq}}_\ell(a,b) = (1 - a_\ell + b_\ell) \cdot \widetilde{\mathsf{eq}}_{\ell-1} = \widetilde{\mathsf{eq}}_{\ell-1}(a,b) - a_\ell \cdot \widetilde{\mathsf{eq}}_{\ell-1}(a,b) + b_\ell \cdot \widetilde{\mathsf{eq}}_{\ell-1}(a,b),
+\end{equation}
+
+and $\widetilde{\mathsf{eq}}_{\ell-1}$ does not refer to $a_\ell$ or $b_\ell$, so
+therefore $\widetilde{\mathsf{eq}}_\ell$ is multilinear if $\widetilde{\mathsf{eq}}_{\ell-1}$ is.
+
+These polynomials can be evaluated using $\ell$ additive inverse operations (one on each $a_i$), $2\ell$ addition operations, and $\ell-1$ multiplication operations, so, they can be evaluated using $O(\ell)$ operations. Said operations are $O(1)$ time, so overall these polynomials can be evaluated in $O(\ell)$ time.
 
 \end{document}
