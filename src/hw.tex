@@ -57,4 +57,48 @@ These polynomials can be evaluated using $\ell$ additive inverse operations (one
 
 \textbf{Question.} Assume that $n$ is a power of two. Give an expression for $\widetilde{\mathsf{mult}}$ that can be evaluated at any point in time $O(\log n)$. The multiplication layer consists of $n = 2^{d-1}$ multiplication gates, where the $j$-th multiplication gate at layer $d - 1$ has both in-neighbors equal to the $j$-th input gate at layer $d$.
 
+\textbf{Answer.} For all positive integers $\ell$ and bit vectors $a,b,c$ of length $\ell$, let:
+
+\begin{equation}
+	\mathsf{eq}^3_\ell(a, b, c) =
+	\begin{cases}
+		1 & \text{if}\ a = b = c, \\
+		0 & \text{otherwise}.
+	\end{cases}
+\end{equation}
+
+Define the multilinear extension $\widetilde{\mathsf{eq}}^3_\ell$ of $\mathsf{eq}^3_\ell$ as follows:
+
+\begin{equation}
+	\widetilde{\mathsf{eq}}^3_\ell(a, b, c) =
+	\prod_{i=1}^\ell (a_i \cdot b_i \cdot c_i) + ((1 - a_i) \cdot (1 - b_i) \cdot (1 - c_i)).
+\end{equation}
+
+It should be easy to check that this is an extension of $\mathsf{eq}^3_\ell$.
+It is also multilinear because each term of the big product is multilinear and
+no two terms refer to the same variable (and this reasoning can be further done out
+as a proof by induction as in the previous answer). Also observe that this expression
+can be evaluated in $O(\ell)$ time.
+
+Let $n$ be the number of multiplication gates. Let $d$ be the number of layers
+of the circuit. Consider that the number of nodes in the circuit is $2^d-1+n$,
+where $2^d-1$ is the number of nodes in a perfect binary tree of height $d-1$,
+and $n$ is the number of input nodes. Consdering that $n = 2^{d-1}$, it requires
+$d+1$ bits to represent an index into the list of nodes. Let the bits in the
+index bit strings be indexed in LSB first notation. Let $k$ be the number of bits
+in $n$. Note that $k = O(\log n)$ and $d+1-n = O(d) = O(\log n)$.
+
+Let:
+
+\begin{equation}
+	\widetilde{\mathsf{mult}}(a, b, c) =
+	\widetilde{\mathsf{eq}}^3_k([a_1, ..., a_n], [b_1, ..., b_n], [c_1, ..., c_n])
+	\cdot \widetilde{\mathsf{eq}}^3_{d+1-n}([b_{n+1}, ..., b_{d+1}], [c_{n+1}, ..., c_{d+1}], [0, ..., 0])
+	\cdot \widetilde{\mathsf{eq}}_{d+1-n}([a_{n+1}, ..., a_{d+1}], [1, 0, ..., 0]).
+\end{equation}
+
+Observe that this defines the multilinear extension of $\mathsf{mult}(a, b, c)$,
+and it can be evaluated in $O(\log n)$ since each of the subscripts on the
+equality predicates is $O(\log n)$.
+
 \end{document}
