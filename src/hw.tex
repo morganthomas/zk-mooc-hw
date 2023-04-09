@@ -187,11 +187,24 @@ Let's write the multilinear extensions explicitly, which will show the claim tha
 on disjoint sets of bits and therefore that their product is multilinear:
 
 \begin{equation}
-	\widetilde{\mathsf{layer}}_i(a) = TODO.
+	\widetilde{\mathsf{layer}}_i(a) = \widetilde{\mathsf{eq}}_{i+1}([a_{k+1}, a_k, a_{k-1}, ..., a_{k+1-i}], [1, ..., 1, 0]).
 \end{equation}
 
 \begin{equation}
-	\widetilde{\mathsf{lidx}_i}(a) = TODO.
+	\begin{array}{rcl}
+		\widetilde{\mathsf{lidx}_i}(a) &=& \widetilde{\mathsf{eq}}_1([b_0], [0]) \cdot \widetilde{\mathsf{eq}}_1([c_0, [1]) \\
+		&\cdot& \widetilde{\mathsf{eq}}^3_{k+1-i}([a_0, ..., a_{k-i}], [b_1, ..., b_{k+1-i}], [c_1, ..., c_{k+1-i}]).
+	\end{array}
+\end{equation}
+
+The remaining definitions fall out of what has been said so far:
+
+\begin{equation}
+	\widetilde{\mathsf{add}}_i(a, b, c) = \widetilde{\mathsf{layer}}_i(a) \cdot \widetilde{\mathsf{layer}}_{i-1}(b) \cdot \widetilde{\mathsf{layer}}_{i-1}(c) \cdot \widetilde{\mathsf{lidx}}_i(a, b, c).
+\end{equation}
+
+\begin{equation}
+	\widetilde{\mathsf{add}}(a, b, c) = \sum_{i=1}^{d-1} \widetilde{\mathsf{add}}_i(a, b, c).
 \end{equation}
 
 \end{document}
