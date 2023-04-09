@@ -84,21 +84,114 @@ Let $n$ be the number of multiplication gates. Let $d$ be the number of layers
 of the circuit. Consider that the number of nodes in the circuit is $2^d-1+n$,
 where $2^d-1$ is the number of nodes in a perfect binary tree of height $d-1$,
 and $n$ is the number of input nodes. Consdering that $n = 2^{d-1}$, it requires
-$d+1$ bits to represent an index into the list of nodes. Let the bits in the
-index bit strings be indexed in LSB first notation. Let $k$ be the number of bits
+$d+1$ bits to represent an index into the list of nodes.
+
+Let the nodes be indexed from left to right, starting from the bottom layer. 
+Let the bits in the index bit strings be indexed in LSB first notation.
+Let $k$ be the number of bits
 in $n$. Note that $k = O(\log n)$ and $d+1-n = O(d) = O(\log n)$.
 
 Let:
 
 \begin{equation}
-	\widetilde{\mathsf{mult}}(a, b, c) =
-	\widetilde{\mathsf{eq}}^3_k([a_1, ..., a_n], [b_1, ..., b_n], [c_1, ..., c_n])
-	\cdot \widetilde{\mathsf{eq}}^3_{d+1-n}([b_{n+1}, ..., b_{d+1}], [c_{n+1}, ..., c_{d+1}], [0, ..., 0])
-	\cdot \widetilde{\mathsf{eq}}_{d+1-n}([a_{n+1}, ..., a_{d+1}], [1, 0, ..., 0]).
+	\begin{array}{rcl}
+		\widetilde{\mathsf{mult}}(a, b, c) &=& 
+		\widetilde{\mathsf{eq}}^3_k([a_1, ..., a_n], [b_1, ..., b_n], [c_1, ..., c_n]) \\
+		&\cdot& \widetilde{\mathsf{eq}}^3_{d+1-n}([b_{n+1}, ..., b_{d+1}], [c_{n+1}, ..., c_{d+1}], [0, ..., 0]) \\
+		&\cdot& \widetilde{\mathsf{eq}}_{d+1-n}([a_{n+1}, ..., a_{d+1}], [1, 0, ..., 0]).
+	\end{array}
 \end{equation}
 
 Observe that this defines the multilinear extension of $\mathsf{mult}(a, b, c)$,
 and it can be evaluated in $O(\log n)$ since each of the subscripts on the
 equality predicates is $O(\log n)$.
+
+\subsection{Part (c)}
+
+\paragraph{Question.} Assume that $n$ is a power of 2. Give an expression for $\widetilde{\mathsf{add}}$
+that can be evaluated at any point in time $O(\log n)$. The addition layer $i$ consists of $2^i$
+addition gates, where for $j \in \{0, 1, ..., 2^i - 1\}$, the $j$-th addition gate at layer $i$
+has as its in-neighbors gates $2j$ and $2j+1$ at layer $i+1$.
+
+\paragraph{Answer.} Let the nodes be indexed from left to right, starting from the bottom layer
+and moving up. Let the indices be represented as bit strings in LSB first notation. Let $k$ be the
+number of bits in $n$. Let $d$ be the number of layers in the circuit. As in part (b), the number of
+nodes in the circuit is $2^d-1+n$, including $n$ input nodes, where $2^d-1$, the number of nodes in
+a perfect binary tree of height $d-1$, is the number of non-input nodes. $k+2$ is the number of bits
+in an index into the nodes.
+
+Let $\mathsf{idx}(i, j)$ denote the index of the $j$-th (zero indexed from the left) node in the
+$i$-th (zero indexed from the bottom) layer. Concretely,
+
+\begin{equation}
+	\begin{array}{rcl}
+		\mathsf{idx}(i, j) &=& (2^d-1) - (2^{d-(i-1)}-1) + n + j \\
+		&=& 2^d - 2^{d-i+1} + n + j.
+	\end{array}
+\end{equation}
+This formula works because $2^d-1$ is the number of nodes in a perfect binary tree of height $d-1$,
+and $2^{d-(i-1)}-1$ is the number of nodes in a perfect binary tree of height $d-1-(i-1)$, which is
+in other words the number of nodes above layer $i$ in the circuit. $n$ is the number of nodes in
+the bottom layer, and $j$ is the number of nodes in layer $i$ before the node with index
+$\mathsf{idx}(i, j)$.
+
+A sum of multilinear polynomials is a multilinear polynomial. Therefore, to compute the multilinear
+extension of the wiring predicate $\mathsf{add}$, it suffices to compute the multilinear extension
+of the addition wiring predicate for each layer, that is, for all $2 \leq i < d$, the multilinear
+extension of
+
+\begin{equation}
+	\mathsf{add}_i(a, b, c) =
+	\begin{cases}
+		1 & \exists j \in [0,2^{d-i}), a = \mathsf{idx}(i, j) \wedge b = \mathsf{idx}(i-1, 2j) \wedge c = \mathsf{idx}(i-1, 2j+1), \\
+		0 & \text{otherwise}.
+	\end{cases}
+\end{equation}
+
+Let these layer-specific wiring predicates be broken down as a product of two predicates, one
+stating that an index belongs to a particular layer, and one stating that $b_j = 2a_j$ and $c_j = 2a_j + 1$,
+where $a_j$ is the $j$ of $a$, and so forth:
+
+\begin{equation}
+	\mathsf{layer}_i(a) =
+	\begin{cases}
+		1 & \exists j \in [0,2^{d-i}), a = \mathsf{idx}(i, j), \\
+		0 & \text{otherwise}.
+	\end{cases}
+\end{equation}
+
+\begin{equation}
+	\mathsf{mask}_i(a) = a \text{\&} (2^{d-i-1}-1).
+\end{equation}
+
+Here \& denotes the bitwise AND operation. This bit mask is supposed to extract $j$;
+that is, $\mathsf{mask}_i(a) = a_j$ if $a$ is in layer $i$.
+
+\begin{equation}
+	\mathsf{lidx}_i(a, b, c) =
+	\begin{cases}
+		1 & \mathsf{mask}_{i-1}(b) = 2 \cdot \mathsf{mask}_i(a) \wedge \mathsf{mask}_{i-1}(c) = 2 \cdot \mathsf{mask}_i(a) + 1, \\
+		0 & \text{otherwise}.
+	\end{cases}
+\end{equation}
+
+\begin{equation}
+	\mathsf{add}_i(a, b, c) =
+	\mathsf{layer}_i(a) \cdot \mathsf{layer}_{i-1}(b) \cdot \mathsf{layer}_{i-1}(c) \cdot \mathsf{lidx}_i(a, b, c).
+\end{equation}
+
+The purpose of decomposing $\mathsf{add}_i$ in this way is that the four terms of the product are each
+dependent on disjoint subsets of the bits of $a, b,$ and $c$. So, to find the multilinear extension of
+$\mathsf{add}_i$, it suffices to find the multilinear extensions of each of the four terms of the product.
+Let's write the multilinear extensions explicitly, which will show the claim that the terms are dependent
+on disjoint sets of bits and therefore that their product is multilinear:
+
+\begin{equation}
+	\widetilde{\mathsf{layer}}_i(a) = TODO.
+\end{equation}
+
+\begin{equation}
+	\widetilde{\mathsf{lidx}_i}(a) = TODO.
+\end{equation}
 
 \end{document}
