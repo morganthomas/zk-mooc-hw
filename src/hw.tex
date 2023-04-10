@@ -239,4 +239,12 @@ Here, $v$ denotes the function mapping the index of an input to its value. $g_\e
 index of a gate to its left input value. $g_r$ denotes the function mapping the index of a gate to its
 right input value. $g_o$ denotes the function mapping the index of a gate to its output value.
 
+The selector polynomial $S$ is a polynomial function which contains, along the points in $\Omega_{\text{gates}}$,
+the value 0 for each multiplication gate, and the value 1 for each addition gate. $S$ is obtained by
+interpolating over the following set of input-output pairs:
+\begin{equation}
+	\{(\omega^{3i+2}, s(i))\},
+\end{equation}
+where $s(i)$ is 0 if the gate with index $i$ is a multiplication gate, and 1 if it is an addition gate.
+
 \end{document}
