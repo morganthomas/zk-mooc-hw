@@ -276,7 +276,10 @@ following point set:
 \begin{equation}
 	\{(\omega^{-i}, v(i)\}_{i=0}^{|I_x|-1}.
 \end{equation}
-The zero test checks that the polynomial $T(y) - \widetilde{v}(y) = 0$ for all $i \in \Omega_{\text{inp}}$.
+If we are representing polynomials in point-value form, then $\widetilde{v}$ has the same
+representation as $v$.
+
+The zero test checks that the polynomial $T(y) - \widetilde{v}(y) = 0$ for all $y \in \Omega_{\text{inp}}$.
 The size of the set the test is used in on is $|I_x|$, the number of instance inputs.
 The degree of the polynomial is $|\Omega|$.
 
@@ -295,5 +298,51 @@ on a set of size $|\Omega|$.
 
 To prove (4), use a zero test to show that $T(y) = 0$ for all $y \in \Omega_{\text{gates}}$. 
 The polynomial $T$ is of degree $|\Omega|$ and it is used on a set of size $|C|$, the number of gates.
+
+\subsection{Part (c)}
+
+The prover is given the setup data for the polynomial IOP and the KZG commitment scheme.
+The proven is given the (instance and advice) input data, a function
+$v : |\Omega_{\text{inp}}| \to \mathbb{F}_p$.
+The prover performs the following steps:
+
+\begin{enumerate}
+	\item The prover computes the trace polynomial $T$.
+	\item The prover computes the polynomial $\widetilde{v}$ by interpolating the values of $v$.
+	\item The prover commits to $T$, resulting in $\mathbf{com}_T$.
+		This process performs $|\Omega|$ group exponentiations, since $T$ is of degree $|\Omega|$.
+	\item The prover runs the zero test on $T - \widetilde{v}$ over $\Omega_{\text{inp}}$:
+		\begin{enumerate}
+			\item The prover commits to $T - \widetilde{v}$, resulting in $\mathbf{com}_{T - \widetilde{v}}$,
+				performing $|\Omega|$ group exponentiations.
+			\item The prover computes the zerofier polynomial $Z_{\Omega_{\text{inp}}}$.
+			\item The prover computes and commits to the quotient polynomial
+				$q = (T - \widetilde{v}) / Z_{\Omega_{\text{inp}}}$,
+				resulting in $\mathbf{com}_q$, performing $|\Omega| - |\Omega_{\text{inp}}|$
+				group exponentiations.
+			\item The prover receives a challenge $r$ via the random oracle.
+			\item The prover computes and sends opening proofs for $(T - \widetilde{v})(r)$ and $q(r)$,
+				performing up to $(|\Omega| - 1) + (|\Omega| - |\Omega_{\text{inp}} - 1|)$
+				group exponentiations.
+		\end{enumerate}
+	\item For each $i \in [0,m)$, the prover runs the zero test on
+		\begin{equation}
+			f = T - \sum_{j=0}^{m-1} S_i \cdot G_i(T)
+		\end{equation}
+		over $\Omega_{\text{gates}}$:
+		\begin{enumerate}
+			\item The prover commits to $f$, resulting in $\mathbf{com}_f$,
+				performing up to $\text{deg}(f) = |\Omega_{\text{inp}}| + \text{deg}(G_i(X)) \cdot |\Omega|$
+				group exponentiations.
+			\item The prover computes the zerofier polynomial $Z_{\Omega_{\text{gates}}}$.
+			\item The prover computes and commits to the quotient polynomial
+				$q = f / Z_{\Omega_{\text{gates}}}$, resulting in $\mathbf{com}_q$,
+				performing $\text{deg}(q) = \text{deg}(f) - |\Omega_{\text{gates}}|$ group exponentiations.
+			\item The prover receives a challenge $r$ via the random oracle.
+			\item The prover computes and sends opening proofs for $f(r)$ and $q(r)$,
+				performing up to $(\text{deg}(f) - 1) + (\text{deg}(q) - 1)$ group exponentiations.
+		\end{enumerate}
+	\item 
+\end{enumerate}
 
 \end{document}
