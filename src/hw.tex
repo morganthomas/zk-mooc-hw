@@ -255,4 +255,42 @@ polynomial function which contains, along the points in $\Omega_{\text{gates}}$,
 of type $i$, and the value 0 for each gate not of type $i$. $S_i$ is obtained by interpolation over the
 set of input-output pairs specified in the last sentence.
 
+\subsection{Part (b)}
+
+The IOP needs to prove, in summary, the following claims:
+
+\begin{enumerate}
+	\item The trace polynomial encodes the correct statement (i.e., instance inputs);
+	\item Every gate is evaluated correctly;
+	\item The wiring / equality constraint is satisfied;
+	\item The output of each gate is zero.
+\end{enumerate}
+
+To prove (1), use a zero test to check that $T(\omega^{-i}) = v(i)$ for all $i \in [0,|I_x|)$.
+The zero test needs to check that a certain polynomial is zero over a point set, so,
+let $\widetilde{v}$ be the polynomial which can be computed publicly by interpolating the
+following point set:
+\begin{equation}
+	\{(\omega^{-i}, v(i)\}_{i=0}^{|I_x|-1}.
+\end{equation}
+The zero test checks that the polynomial $T(y) - \widetilde{v}(y) = 0$ for all $i \in \Omega_{\text{inp}}$.
+The size of the set the test is used in on is $|I_x|$, the number of instance inputs.
+The degree of the polynomial is $|\Omega|$.
+
+To prove (2), use a zero test to check that the following polynomial is zero for all $y \in \Omega_{\text{gates}}$:
+\begin{equation}
+	T(y) - \sum_{j=0}^{m-1} S_j(y) \cdot G_i(T, y).
+\end{equation}
+Here $G_i$ denotes the definition of the $i$th custom gate, which is parameterized by the trace polynomial and
+the output coordinate. The degree of this polynomial is no less than $|\Omega|$, since $|\Omega|$ is the degree
+of $T$, but there is no upper bound on the degree of the polynomial as it depends on the degrees of the $G_i$.
+This test is applied on a set of size $|C|$, the number of gates.
+
+To prove (3), use a prescribed permutation check to show that for all $y \in \Omega$, $T(y) = T(W(y))$.
+The prescribed permutation check reduces to a product check on a polynomial of degree $2|\Omega|$
+on a set of size $|\Omega|$.
+
+To prove (4), use a zero test to show that $T(y) = 0$ for all $y \in \Omega_{\text{gates}}$. 
+The polynomial $T$ is of degree $|\Omega|$ and it is used on a set of size $|C|$, the number of gates.
+
 \end{document}
