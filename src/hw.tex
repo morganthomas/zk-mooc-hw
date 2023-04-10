@@ -207,7 +207,17 @@ The remaining definitions fall out of what has been said so far:
 	\widetilde{\mathsf{add}}(a, b, c) = \sum_{i=1}^{d-1} \widetilde{\mathsf{add}}_i(a, b, c).
 \end{equation}
 
+TODO: argue evaluation time
+
 \section{Question 2}
+
+This question asks how to implement PLONKish arithmetization, with custom gates. The assumption of this
+answer is that this is equivalent to Halo 2's PLONKish arithmetization without fixed columns or
+lookup arguments. It features custom gates which can use variables with relative row offsets, with
+no limit on the magnitude of the offsets. These custom gates are defined as polynomials constrained to equal
+zero at all rows. It also features equality constraints, defined as a permutation $W$ of the cells (i.e.,
+a rotation of $\Omega$), with the equality constraints stating that $T(W(i)) = T(i)$, for all $i \in \Omega$,
+where $T$ is the trace polynomial.
 
 \subsection{Part (a)}
 
@@ -246,5 +256,7 @@ interpolating over the following set of input-output pairs:
 	\{(\omega^{3i+2}, s(i))\},
 \end{equation}
 where $s(i)$ is 0 if the gate with index $i$ is a multiplication gate, and 1 if it is an addition gate.
+
+TODO: what about for extended PLONK?
 
 \end{document}
