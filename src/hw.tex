@@ -322,7 +322,7 @@ The prover performs the following steps:
 				group exponentiations.
 			\item The prover receives a challenge $r$ via the random oracle.
 			\item The prover computes and sends opening proofs for $(T - \widetilde{v})(r)$ and $q(r)$,
-				performing up to $(|\Omega| - 1) + (|\Omega| - |\Omega_{\text{inp}} - 1|)$
+				performing up to $(|\Omega| - 1) + ((|\Omega| - |\Omega_{\text{inp}}|) - 1)$
 				group exponentiations.
 		\end{enumerate}
 	\item For each $i \in [0,m)$, the prover runs the zero test on
@@ -347,10 +347,33 @@ The prover performs the following steps:
 	\item The prover runs the zero test on $T$ over $\Omega_{\text{gates}}$:
 		\begin{enumerate}
 			\item The prover receives a challenge $r$ via the random oracle.
+			\item The prover computes and commits to the quotient polynomial
+				$q = T / Z_{\Omega_{\text{gates}}}$, performing
+				$\text{deg}(q) = |\Omega| - |\Omega_{\text{gates}}|$ group exponentiations.
 			\item The prover computes and sends opening proofs for $T(r)$ and $q(r)$,
 				performing up to $(|\Omega| - 1) + (\text{deg}(q) - 1)$ group exponentiations.
-				Here $q = f / Z_{\Omega_{\text{gates}}}$, as in the previous step.
 		\end{enumerate}
 \end{enumerate}
+
+Counting up the group exponentations, let:
+\begin{equation}
+	\begin{array}{rcl}
+		a &=& |\Omega| \\
+		b &=& |\Omega_{\text{inp}}| \\
+		c &=& |\Omega_{\text{gates}}| \\
+		d_i &=& \text{deg}(G_i) \\
+		f_i &=& b + a \cdot d_i
+	\end{array}
+\end{equation}
+The total number of group exponentiations performed by the prover is no more than:
+\begin{equation}
+	\begin{array}{rl}
+		& a + a + (a - b) + ((a - 1) + (a - b) - 1) \\
+		+ & \left ( \sum_{i=0}^{m-1} f_i + (f_i - c) + ((f_i - 1) + ((f_i - c) - 1)) \right ) \\
+		+ & 2a + (a - c) + ((a - 1) + ((a - c) - 1)) \\
+		= & (3a - b) + (2a - (b + 2)) + \left ( \sum_{i=0}^{m-1} 4f_i - 2(c + 1) \right ) + (3a - c) + (2a - (c + 2)) \\
+		= & 2 \cdot (4a - (b + c + 2)) + \left ( \sum_{i=0}^{m-1} 4f_i - 2(c + 1) \right ).
+	\end{array}
+\end{equation}
 
 \end{document}
