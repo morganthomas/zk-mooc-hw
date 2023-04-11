@@ -342,7 +342,15 @@ The prover performs the following steps:
 			\item The prover computes and sends opening proofs for $f(r)$ and $q(r)$,
 				performing up to $(\text{deg}(f) - 1) + (\text{deg}(q) - 1)$ group exponentiations.
 		\end{enumerate}
-	\item 
+	\item The prover runs a prescribed permutation check to show that for all $y \in \Omega$, $T(y) = T(W(y))$.
+		To do so, the prover performs $2|\Omega|$ group exponentiations.
+	\item The prover runs the zero test on $T$ over $\Omega_{\text{gates}}$:
+		\begin{enumerate}
+			\item The prover receives a challenge $r$ via the random oracle.
+			\item The prover computes and sends opening proofs for $T(r)$ and $q(r)$,
+				performing up to $(|\Omega| - 1) + (\text{deg}(q) - 1)$ group exponentiations.
+				Here $q = f / Z_{\Omega_{\text{gates}}}$, as in the previous step.
+		\end{enumerate}
 \end{enumerate}
 
 \end{document}
