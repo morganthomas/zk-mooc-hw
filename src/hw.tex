@@ -74,10 +74,10 @@ Define the multilinear extension $\widetilde{\mathsf{eq}}^3_\ell$ of $\mathsf{eq
 	\prod_{i=1}^\ell (a_i \cdot b_i \cdot c_i) + ((1 - a_i) \cdot (1 - b_i) \cdot (1 - c_i)).
 \end{equation}
 
-It should be easy to check that this is an extension of $\mathsf{eq}^3_\ell$.
+I can check that this is an extension of $\mathsf{eq}^3_\ell$.
 It is also multilinear because each term of the big product is multilinear and
 no two terms refer to the same variable (and this reasoning can be further done out
-as a proof by induction as in the previous answer). Also observe that this expression
+as a proof by induction as in the previous answer). I can see that this expression
 can be evaluated in $O(\ell)$ time.
 
 Let $n$ be the number of multiplication gates. Let $d$ be the number of layers
@@ -210,11 +210,10 @@ The remaining definitions fall out of what has been said so far:
 Since this expression is a product of a constant number of multilinear equality functions which can be evaluated in
 $O(\log n)$, it can be evaluated in $O(\log n)$.
 
-TODO: argue evaluation time
-
 \section{Question 2}
 
-This question asks how to implement PLONKish arithmetization, with custom gates. The assumption of this
+This question asks how to implement the extended PLONK protocol, i.e. PLONKish arithmetization,
+with custom gates. The interpretation of this
 answer is that this is equivalent to Halo 2's PLONKish arithmetization without fixed columns or
 lookup arguments. It features custom gates which can use variables with relative row offsets, with
 no limit on the magnitude of the offsets. These custom gates are defined as polynomials constrained to equal
@@ -372,7 +371,7 @@ The total number of group exponentiations performed by the prover is no more tha
 		+ & \left ( \sum_{i=0}^{m-1} f_i + (f_i - c) + ((f_i - 1) + ((f_i - c) - 1)) \right ) \\
 		+ & 2a + (a - c) + ((a - 1) + ((a - c) - 1)) \\
 		= & (3a - b) + (2a - (b + 2)) + \left ( \sum_{i=0}^{m-1} 4f_i - 2(c + 1) \right ) + (3a - c) + (2a - (c + 2)) \\
-		= & 2 \cdot (4a - (b + c + 2)) + \left ( \sum_{i=0}^{m-1} 4f_i - 2(c + 1) \right ).
+		= & 2 \cdot \left( 4a - (b + c + 2) + \left ( \sum_{i=0}^{m-1} 2f_i - c + 1 \right ) \right ).
 	\end{array}
 \end{equation}
 
